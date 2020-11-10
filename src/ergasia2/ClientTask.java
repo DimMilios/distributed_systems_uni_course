@@ -17,7 +17,7 @@ public class ClientTask implements Runnable {
     public void run() {
         String path;
         try {
-            pw = new PrintWriter(socket.getOutputStream(), true);
+            pw = new PrintWriter(socket.getOutputStream());
             br = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.print("Enter file path: ");
@@ -25,10 +25,12 @@ public class ClientTask implements Runnable {
             String fileNames = "Signin " + FileName.getFileNames(path);
 
             pw.println(fileNames);
+            pw.flush();
 
             while(true) {
-                String keywords = "Search " + br.readLine();
+//                String keywords = "Search " + br.readLine();
 
+                String keywords = br.readLine();
                 pw.println(keywords);
                 pw.flush();
             }
