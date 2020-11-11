@@ -6,8 +6,6 @@ import java.net.Socket;
 public class ClientTask implements Runnable {
 
     private final Socket socket;
-    private PrintWriter pw;
-    private BufferedReader br;
 
     public ClientTask(Socket socket) {
         this.socket = socket;
@@ -15,46 +13,38 @@ public class ClientTask implements Runnable {
 
     @Override
     public void run() {
-        String path;
         try {
-            pw = new PrintWriter(socket.getOutputStream());
-            br = new BufferedReader(new InputStreamReader(System.in));
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.print("Enter file path: ");
-            path = br.readLine();
+            String path = in.readLine();
             String fileNames = "Signin " + FileName.getFileNames(path);
 
-            pw.println(fileNames);
-            pw.flush();
+            out.println(fileNames);
+            out.flush();
 
-            while(true) {
-//                String keywords = "Search " + br.readLine();
+            String input;
+            while((input = in.readLine()) != null) {
+                out.println(input);
+                out.flush();
 
-                String keywords = br.readLine();
-                pw.println(keywords);
-                pw.flush();
+                if (input.contains("Signout")) {
+                    break;
+                }
             }
         } catch (IOException e)  {
             e.printStackTrace();
+        } finally {
+            if (socket != null && !socket.isClosed()) {
+                try {
+                    socket.close();
+                    System.exit(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-
-
-
-//
-//
-//        try {
-//            InputStream inputStream = socket.getInputStream();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-//
-//            while (true) {
-//                String message = br.readLine();
-//                System.out.println(message);
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
     }
 }

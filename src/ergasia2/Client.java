@@ -1,13 +1,14 @@
 package ergasia2;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 // Send Signin/Signout/Search requests
 // Receive replies
 public class Client {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
 			System.out.println("Error: you forgot <server IP>");
 			return;
@@ -15,44 +16,31 @@ public class Client {
 
 		String serverIP = args[0];
 		Socket socket = null;
-//        PrintWriter pw = null;
-//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		try {
-			socket = new Socket(serverIP, 4242);
-//            pw = new PrintWriter(socket.getOutputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		(new Thread(new ClientTask(socket))).start();
 //		String path = "C:\\Users\\dimit\\Documents\\ReactProjects\\pms\\src\\components";
 
 		try {
-			InputStream inputStream = socket.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+			socket = new Socket(serverIP, 4242);
 
-			while (true) {
-				String message = br.readLine();
+			(new Thread(new ClientTask(socket))).start();
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+			String message;
+			while ((message = br.readLine()) != null) {
 				System.out.println(message);
 			}
 
+		} catch(ConnectException ex) {
+			System.out.println("Server is currently offline, try again later!");
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (socket != null && !socket.isClosed()) {
+				socket.close();
+			}
 		}
 
-
-//		while (true) {
-//            try {
-//				String path = br.readLine();
-//				String fileNames = "Signin " + FileName.getFileNames(path);
-//
-//				pw.println(fileNames);
-//                pw.flush();
-//            } catch (IOException e)  {
-//                e.printStackTrace();
-//            }
-//        }
 	}
 }
 
