@@ -2,6 +2,8 @@ package ergasia2;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ClientTask implements Runnable {
 
@@ -17,8 +19,8 @@ public class ClientTask implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.print("Enter file path: ");
-            String path = in.readLine();
+            String path = getFilePath(in);
+
             String fileNames = "Signin " + FileName.getFileNames(path);
 
             out.println(fileNames);
@@ -37,5 +39,16 @@ public class ClientTask implements Runnable {
             e.printStackTrace();
         }
 
+    }
+
+    public String getFilePath(BufferedReader in) throws IOException {
+        String path;
+        Path file;
+        do {
+            System.out.print("Enter file path: ");
+            path = in.readLine();
+            file = new File(path).toPath();
+        } while (!Files.isDirectory(file));
+        return path;
     }
 }

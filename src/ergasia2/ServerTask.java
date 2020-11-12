@@ -41,7 +41,6 @@ public class ServerTask implements Runnable {
 
             throw new SocketException("Client was closed: " + getClientInfo());
         } catch (IOException e) {
-            e.printStackTrace();
             signOutAction();
         } finally {
             try {
