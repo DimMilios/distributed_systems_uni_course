@@ -37,7 +37,12 @@ public class Client {
 			e.printStackTrace();
 		} finally {
 			if (socket != null && !socket.isClosed()) {
-				socket.close();
+				try {
+					socket.close();
+					System.exit(0);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

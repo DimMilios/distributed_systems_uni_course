@@ -35,15 +35,6 @@ public class ClientTask implements Runnable {
             }
         } catch (IOException e)  {
             e.printStackTrace();
-        } finally {
-            if (socket != null && !socket.isClosed()) {
-                try {
-                    socket.close();
-                    System.exit(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
     }

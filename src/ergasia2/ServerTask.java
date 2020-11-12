@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 
 public class ServerTask implements Runnable {
     private Socket socket;
     private Map<String, List<String>> clientFiles;
+    private BufferedReader in;
+    private PrintWriter out;
 
 
     public ServerTask(Socket s, Map<String, List<String>> clientFiles) {
@@ -19,11 +22,11 @@ public class ServerTask implements Runnable {
 
     public void run() {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
 
-            while (true) {
-                String query = in.readLine();
+            String query;
+            while ((query = in.readLine()) != null) {
                 System.out.println(query);
 
                 if (query.contains("Signin")) {
@@ -35,22 +38,22 @@ public class ServerTask implements Runnable {
                     break;
                 }
             }
+
+            throw new SocketException("Client was closed: " + getClientInfo());
         } catch (IOException e) {
-                e.printStackTrace();
-                signOutAction();
+            e.printStackTrace();
+            signOutAction();
         } finally {
             try {
                 socket.close();
-            } catch (IOException e) {
-
-            }
+            } catch (IOException e) {e.printStackTrace();}
         }
     }
 
     private void signInAction(PrintWriter out, String query) {
         String message = query.substring("Signin ".length());
 
-        String client = createClient();
+        String client = getClientInfo();
         List<String> fileNames = createFileNamesList(message);
 
         System.out.println("Client info: " + client + " files: " + fileNames);
@@ -87,8 +90,8 @@ public class ServerTask implements Runnable {
         int i = 0;
 
         for (String word : keywords) {
-            String fileNameLc = fileName.toLowerCase();
-            String wordLc = word.toLowerCase();
+            String fileNameLc = fileName.trim().toLowerCase();
+            String wordLc = word.trim().toLowerCase();
 
             values[i++] = fileNameLc.contains(wordLc) ? 1 : -1;
         }
@@ -105,7 +108,7 @@ public class ServerTask implements Runnable {
         return Arrays.asList(message.split(","));
     }
 
-    private String createClient() {
+    private String getClientInfo() {
         String ipAddress = this.socket.getInetAddress().toString();
         int port = this.socket.getPort();
 
@@ -114,7 +117,7 @@ public class ServerTask implements Runnable {
 
     private void signOutAction() {
         try {
-            removeUserInfoAndCloseSocket();
+            removeClientInfo();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,10 +127,10 @@ public class ServerTask implements Runnable {
         out.println("Ok");
         out.flush();
 
-        removeUserInfoAndCloseSocket();
+        removeClientInfo();
     }
 
-    private void removeUserInfoAndCloseSocket() throws IOException {
+    private void removeClientInfo() throws IOException {
         if (socket != null && !socket.isClosed()) {
             String port = String.valueOf(this.socket.getPort());
 
@@ -143,8 +146,6 @@ public class ServerTask implements Runnable {
                     System.out.println(clientFiles);
                 }
             }
-
-            socket.close();
         }
     }
 }

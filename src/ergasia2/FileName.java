@@ -1,10 +1,13 @@
 package ergasia2;
 
 import java.io.*;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+
 public class FileName {
 
-	public static void main(String[] args) {
-		System.out.println(getFileNames("C:\\Users\\dimit\\Documents\\ReactProjects\\pms\\src\\components"));
+	public static void main(String[] args) throws IOException {
+
 	}
 
     public static String getFileNames(String path) {
@@ -17,6 +20,5 @@ public class FileName {
         			s += listOfFiles[i].getName()+",";
 		return s.substring(0, s.length()-1);
     }
-
 }
 
