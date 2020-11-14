@@ -1,14 +1,8 @@
 package ergasia2;
 
 import java.io.*;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 
 public class FileName {
-
-	public static void main(String[] args) throws IOException {
-
-	}
 
     public static String getFileNames(String path) {
 		File folder = new File(path);

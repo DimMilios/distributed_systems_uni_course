@@ -85,19 +85,13 @@ public class ServerTask implements Runnable {
     }
 
     private boolean containsAll(List<String> keywords, String fileName) {
-        int[] values = new int[keywords.size()];
-        int i = 0;
-
         for (String word : keywords) {
             String fileNameLc = fileName.trim().toLowerCase();
             String wordLc = word.trim().toLowerCase();
 
-            values[i++] = fileNameLc.contains(wordLc) ? 1 : -1;
-        }
-
-        for (int value : values) {
-            if (value == -1)
+            if (!fileNameLc.contains(wordLc)) {
                 return false;
+            }
         }
 
         return true;

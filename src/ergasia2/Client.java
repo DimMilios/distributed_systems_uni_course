@@ -16,8 +16,6 @@ public class Client {
         String serverIP = args[0];
         Socket socket = null;
 
-//		String path = "C:\Users\dimit\Documents\ReactProjects\pms\src\components";
-
         try {
             socket = new Socket(serverIP, 4242);
 
