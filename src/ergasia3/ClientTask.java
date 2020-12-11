@@ -26,7 +26,7 @@ public class ClientTask implements Runnable {
                 user = in.readLine();
             }
 
-            while(true) {
+            while (true) {
                 System.out.print("Menu\n1.Read emails\n2.New email\nEnter your choice: ");
                 String choice = in.readLine();
 
@@ -47,19 +47,28 @@ public class ClientTask implements Runnable {
                         System.out.println("New email");
                         System.out.print("Enter email recipient: ");
                         String recipient = in.readLine();
+                        if (!isValid(recipient)) {
+                            System.out.println("***Invalid IP***");
+                            continue;
+                        }
                         System.out.print("Enter text: ");
                         String text = in.readLine();
                         out.println("client: mail " + recipient + " from-" + user + " `" + text + "`");
                         out.flush();
+
                         break;
                     default:
                         System.out.println("Wrong input");
                 }
             }
 
-        } catch (IOException e)  {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isValid(String recipient) {
+        return recipient.contains("@") && recipient.contains(":");
     }
 
     public static boolean isNumeric(String strNum) {

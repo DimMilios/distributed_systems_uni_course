@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     private static ServerSocket serverSocket;
 
-    private static Map<String, String> userEmails = new ConcurrentHashMap<>();
+    private static Map<String, List<String>> userEmails = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
